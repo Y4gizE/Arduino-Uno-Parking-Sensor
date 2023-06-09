@@ -1,0 +1,64 @@
+const int trigPin = 2;  // The trig pin is connected to Arduino pin 2
+const int echoPin = 3;  // The echo pin is connected to Arduino pin 3
+const int buzzerPin = 4;  // The buzzer pin is connected to Arduino pin 4
+
+long duration;  // The round-trip time of the sound wave from the sensor
+float distance;   // The distance between the object and the sensor
+
+void setup() {
+  pinMode(trigPin, OUTPUT);
+  pinMode(echoPin, INPUT);
+  pinMode(buzzerPin, OUTPUT);
+  
+  Serial.begin(9600);  // Start serial communication (for development purposes)
+}
+
+void loop() {
+  // Perform distance measurement from an ultrasonic sensor
+  digitalWrite(trigPin, LOW);
+  delayMicroseconds(2);
+  digitalWrite(trigPin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigPin, LOW);
+  
+  duration = pulseIn(echoPin, HIGH);
+  
+  // Calculate the distance from the round-trip time of the sound wave
+  distance = duration * 0.034 / 2;
+  
+  // Print the distance value to the serial monitor (for development purposes)
+  Serial.print("Uzaklik: ");
+  Serial.print(distance);
+  Serial.println(" cm");
+  
+  tone(buzzerPin, 640);
+  // Park sensor response based on the distance value
+  if (20 < distance && distance < 30) {
+    
+    digitalWrite(buzzerPin, HIGH);
+    delay(800);
+    noTone(buzzerPin);
+    delay(800);
+  } 
+  else if(distance > 10 && distance < 20) {
+    
+    digitalWrite(buzzerPin, HIGH);
+    delay(200);
+    noTone(buzzerPin);
+    delay(50);;
+  }
+  else if (distance < 10){
+    digitalWrite(buzzerPin, HIGH);
+    delay(100);
+    noTone(buzzerPin);
+    delay(100);
+  }
+  else{
+    digitalWrite(buzzerPin, HIGH);
+    delay(100);
+    noTone(buzzerPin);
+    delay(1000);
+  }
+  
+  
+}
